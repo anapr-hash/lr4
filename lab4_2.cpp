@@ -4,86 +4,93 @@
 #include <locale.h>
 
 struct Node {
-	int data;
-	struct Node* left;
-	struct Node* right;
+  int data;
+  struct Node* left;
+  struct Node* right;
 };
 
 struct Node* root;
+int duplicateFound = 0;
 
 struct Node* CreateTree(struct Node* root, struct Node* r, int data)
 {
-	if (r == NULL)
-	{
-		r = (struct Node*)malloc(sizeof(struct Node));
-		if (r == NULL)
-		{
-			printf("Œ¯Ë·Í‡ ‚˚‰ÂÎÂÌËˇ Ô‡ÏˇÚË");
-			exit(0);
-		}
+  if (r == NULL)
+  {
+    r = (struct Node*)malloc(sizeof(struct Node));
+    if (r == NULL)
+    {
+      printf("–û—à–∏–±–∫–∞ –≤—ã–¥–µ–ª–µ–Ω–∏—è –ø–∞–º—è—Ç–∏");
+      exit(0);
+    }
 
-		r->left = NULL;
-		r->right = NULL;
-		r->data = data;
-		if (root == NULL) return r;
+    r->left = NULL;
+    r->right = NULL;
+    r->data = data;
+    if (root == NULL) return r;
 
-		if (data > root->data)  root->left = r;
-		else                    root->right = r;
-		return r;
-	}
+    if (data > root->data)  root->left = r;
+    else                    root->right = r;
+    return r;
+  }
 
-	if (data == r->data)
-		return root;
+  if (data == r->data)
+  {
+    duplicateFound = 1;
+    return root;
+  }
 
-	if (data > r->data)
-		CreateTree(r, r->left, data);
-	else
-		CreateTree(r, r->right, data);
+  if (data > r->data)
+    CreateTree(r, r->left, data);
+  else
+    CreateTree(r, r->right, data);
 
-	return root;
+  return root;
 }
 
 void print_tree(struct Node* r, int l)
 {
+  if (r == NULL)
+  {
+    return;
+  }
 
-	if (r == NULL)
-	{
-		return;
-	}
+  print_tree(r->right, l + 1);
+  for (int i = 0; i < l; i++)
+  {
+    printf(" ");
+  }
 
-	print_tree(r->right, l + 1);
-	for (int i = 0; i < l; i++)
-	{
-		printf(" ");
-	}
-
-	printf("%d\n", r->data);
-	print_tree(r->left, l + 1);
+  printf("%d (%d)\n", r->data, l);  
+  print_tree(r->left, l + 1);
 }
 
 int main()
 {
-	setlocale(LC_ALL, "");
-	int D, start = 1;
+  setlocale(LC_ALL, "");
+  int D, start = 1;
 
-	root = NULL;
-	printf("-1 - ÓÍÓÌ˜‡ÌËÂ ÔÓÒÚÓÂÌËˇ ‰ÂÂ‚‡\n");
-	while (start)
-	{
-		printf("¬‚Â‰ËÚÂ ˜ËÒÎÓ: ");
-		scanf_s("%d", &D);
-		if (D == -1)
-		{
-			printf("œÓÒÚÓÂÌËÂ ‰ÂÂ‚‡ ÓÍÓÌ˜ÂÌÓ\n\n");
-			start = 0;
-		}
-		else
-			root = CreateTree(root, root, D);
+  root = NULL;
+  printf("-1 - –æ–∫–æ–Ω—á–∞–Ω–∏–µ –ø–æ—Å—Ç—Ä–æ–µ–Ω–∏—è –¥–µ—Ä–µ–≤–∞\n");
+  while (start)
+  {
+    printf("–í–≤–µ–¥–∏—Ç–µ —á–∏—Å–ª–æ: ");
+    scanf_s("%d", &D);
+    if (D == -1)
+    {
+      printf("–ü–æ—Å—Ç—Ä–æ–µ–Ω–∏–µ –¥–µ—Ä–µ–≤–∞ –æ–∫–æ–Ω—á–µ–Ω–æ\n\n");
+      start = 0;
+    }
+    else
+    {
+      duplicateFound = 0;
+      root = CreateTree(root, root, D);
+      if (duplicateFound)
+        printf("  >>> –ß–∏—Å–ª–æ %d —É–∂–µ –±—ã–ª–æ –≤–≤–µ–¥–µ–Ω–æ —Ä–∞–Ω–µ–µ, –ø–æ–≤—Ç–æ—Ä–Ω–æ –Ω–µ –¥–æ–±–∞–≤–ª–µ–Ω–æ\n", D);
+    }
+  }
 
-	}
+  print_tree(root, 0);
 
-	print_tree(root, 0);
-
-	scanf_s("%d", &D);
-	return 0;
+  scanf_s("%d", &D);
+  return 0;
 }
