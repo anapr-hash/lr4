@@ -4,128 +4,136 @@
 #include <locale.h>
 
 struct Node {
-	int data;
-	struct Node* left;
-	struct Node* right;
+  int data;
+  struct Node* left;
+  struct Node* right;
 };
 
 struct Node* root;
 
 struct Node* CreateTree(struct Node* root, struct Node* r, int data)
 {
-	if (r == NULL)
-	{
-		r = (struct Node*)malloc(sizeof(struct Node));
-		if (r == NULL)
-		{
-			printf("Ошибка выделения памяти");
-			exit(0);
-		}
+  if (r == NULL)
+  {
+    r = (struct Node*)malloc(sizeof(struct Node));
+    if (r == NULL)
+    {
+      printf("РћС€РёР±РєР° РІС‹РґРµР»РµРЅРёСЏ РїР°РјСЏС‚Рё");
+      exit(0);
+    }
 
-		r->left = NULL;
-		r->right = NULL;
-		r->data = data;
-		if (root == NULL) return r;
+    r->left = NULL;
+    r->right = NULL;
+    r->data = data;
+    if (root == NULL) return r;
 
-		if (data > root->data) root->left = r;
-		else root->right = r;
-		return r;
-	}
+    if (data > root->data) root->left = r;
+    else root->right = r;
+    return r;
+  }
 
-	if (data > r->data)
-		CreateTree(r, r->left, data);
-	else
-		CreateTree(r, r->right, data);
+  if (data > r->data)
+    CreateTree(r, r->left, data);
+  else
+    CreateTree(r, r->right, data);
 
-	return root;
+  return root;
 }
 
 void print_tree(struct Node* r, int l)
 {
+  if (r == NULL)
+  {
+    return;
+  }
 
-	if (r == NULL)
-	{
-		return;
-	}
+  print_tree(r->right, l + 1);
+  for (int i = 0; i < l; i++)
+  {
+    printf(" ");
+  }
 
-	print_tree(r->right, l + 1);
-	for (int i = 0; i < l; i++)
-	{
-		printf(" ");
-	}
-
-	printf("%d\n", r->data);
-	print_tree(r->left, l + 1);
+  printf("%d (%d)\n", r->data, l);   
+  print_tree(r->left, l + 1);
 }
 
 struct Node* FindNode(struct Node* r, int data)
 {
-	if (r == NULL)
-		return NULL;
+  if (r == NULL)
+    return NULL;
 
-	if (r->data == data)
-		return r;
+  if (r->data == data)
+    return r;
 
-	if (data > r->data)
-		return FindNode(r->left, data);
-	else
-		return FindNode(r->right, data);
+  if (data > r->data)
+    return FindNode(r->left, data);
+  else
+    return FindNode(r->right, data);
 }
 
-int CountOccurrences(struct Node* r, int data)
+int CountOccurrences(struct Node* r, int data, int level)
 {
-	if (r == NULL)
-		return 0;
+  if (r == NULL)
+    return 0;
 
-	int count = (r->data == data) ? 1 : 0;
+  int count = 0;
 
-	count += CountOccurrences(r->left, data);
-	count += CountOccurrences(r->right, data);
+  if (r->data == data)
+  {
+    printf("  Р­Р»РµРјРµРЅС‚ %d РЅР°Р№РґРµРЅ РЅР° СѓСЂРѕРІРЅРµ %d\n", data, level);
+    count = 1;
+  }
 
-	return count;
+  count += CountOccurrences(r->left, data, level + 1);
+  count += CountOccurrences(r->right, data, level + 1);
+
+  return count;
 }
 
 int main()
 {
-	setlocale(LC_ALL, "");
-	int D, start = 1;
-	struct Node* found;
+  setlocale(LC_ALL, "");
+  int D, start = 1;
+  struct Node* found;
 
-	root = NULL;
-	printf("-1 - окончание построения дерева\n");
-	while (start)
-	{
-		printf("Введите число: ");
-		scanf_s("%d", &D);
-		if (D == -1)
-		{
-			printf("Построение дерева окончено\n\n");
-			start = 0;
-		}
-		else
-			root = CreateTree(root, root, D);
+  root = NULL;
+  printf("-1 - РѕРєРѕРЅС‡Р°РЅРёРµ РїРѕСЃС‚СЂРѕРµРЅРёСЏ РґРµСЂРµРІР°\n");
+  while (start)
+  {
+    printf("Р’РІРµРґРёС‚Рµ С‡РёСЃР»Рѕ: ");
+    scanf_s("%d", &D);
+    if (D == -1)
+    {
+      printf("РџРѕСЃС‚СЂРѕРµРЅРёРµ РґРµСЂРµРІР° РѕРєРѕРЅС‡РµРЅРѕ\n\n");
+      start = 0;
+    }
+    else
+      root = CreateTree(root, root, D);
 
-	}
+  }
 
-	print_tree(root, 0);
-	printf("\nВведите значение для поиска: ");
-	scanf_s("%d", &D);
+  printf("\nРџРѕСЃС‚СЂРѕРµРЅРЅРѕРµ РґРµСЂРµРІРѕ (Р·РЅР°С‡РµРЅРёРµ (СѓСЂРѕРІРµРЅСЊ)):\n");
+  print_tree(root, 0);
 
-	found = FindNode(root, D);
-	if (found != NULL)
-		printf("Элемент %d найден\n", found->data);
-	else
-		printf("Элемент %d в дереве не найден\n", D);
+  printf("\nР’РІРµРґРёС‚Рµ Р·РЅР°С‡РµРЅРёРµ РґР»СЏ РїРѕРёСЃРєР°: ");
+  scanf_s("%d", &D);
 
-	printf("\nВведите значение для подсчёта: ");
-	scanf_s("%d", &D);
+  found = FindNode(root, D);
+  if (found != NULL)
+    printf("Р­Р»РµРјРµРЅС‚ %d РЅР°Р№РґРµРЅ\n", found->data);
+  else
+    printf("Р­Р»РµРјРµРЅС‚ %d РІ РґРµСЂРµРІРµ РЅРµ РЅР°Р№РґРµРЅ\n", D);
 
-	int cnt = CountOccurrences(root, D);
-	if (cnt == 0)
-		printf("Элемент %d в дереве не встречается\n", D);
-	else
-		printf("Элемент %d встречается %d раз(а)\n", D, cnt);
+  printf("\nР’РІРµРґРёС‚Рµ Р·РЅР°С‡РµРЅРёРµ РґР»СЏ РїРѕРґСЃС‡С‘С‚Р°: ");
+  scanf_s("%d", &D);
 
-	scanf_s("%d", &D);
-	return 0;
+  printf("\nР’С…РѕР¶РґРµРЅРёСЏ СЌР»РµРјРµРЅС‚Р° %d:\n", D);
+  int cnt = CountOccurrences(root, D, 0);
+  if (cnt == 0)
+    printf("Р­Р»РµРјРµРЅС‚ %d РІ РґРµСЂРµРІРµ РЅРµ РІСЃС‚СЂРµС‡Р°РµС‚СЃСЏ\n", D);
+  else
+    printf("Р­Р»РµРјРµРЅС‚ %d РІСЃС‚СЂРµС‡Р°РµС‚СЃСЏ %d СЂР°Р·(Р°)\n", D, cnt);
+
+  scanf_s("%d", &D);
+  return 0;
 }
